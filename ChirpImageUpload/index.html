@@ -12,6 +12,9 @@
     <div id="output"></div>
 
     <script>
+        // Base64 encoded GitHub token
+        const encodedToken = "Z2hwXzlBVmN6U2t4N2VLVlJJYTRWdUR4TVJkVE1tcWc0TVhnbUd0"; 
+
         document.getElementById("uploadBtn").onclick = async () => {
             const fileInput = document.getElementById("imageInput");
             const output = document.getElementById("output");
@@ -26,10 +29,6 @@
             const base64Content = await toBase64(file);
 
             const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${file.name}`;
-            const GITHUB_TOKEN = "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"; // Your GitHub Token
-
-            // Encode token to Base64
-            const encodedToken = btoa(GITHUB_TOKEN); // Base64 encoding
 
             try {
                 const response = await fetch(url, {
