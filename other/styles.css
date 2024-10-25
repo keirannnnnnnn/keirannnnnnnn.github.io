@@ -40,14 +40,13 @@ body {
 .preview {
     display: none; /* Initially hidden */
     position: absolute;
+    top: 100%; /* Position below the link */
     left: 0;
-    bottom: -30px; /* Adjust as necessary */
+    width: 300px; /* Width of the preview */
+    height: 200px; /* Height of the preview */
+    border: none;
     background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    width: max-content;
-    white-space: nowrap;
+    z-index: 1;
 }
 
 .link-item:hover .preview {
