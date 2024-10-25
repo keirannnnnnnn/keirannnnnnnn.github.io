@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Profile</title>
+    <!-- Google Fonts link for Noto Sans -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .profiles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .profile img {
+            width: 100px; /* Fixed width for mobile */
+            height: 100px; /* Fixed height for mobile */
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+
+        .profile:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .navigate-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .navigate-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px; /* Smaller font size on mobile */
+            }
+
+            .navigate-button {
+                font-size: 14px; /* Smaller button text on mobile */
+            }
+
+            .profile img {
+                width: 80px; /* Smaller profile image on mobile */
+                height: 80px; /* Smaller profile image on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Profile</h1>
+        <div class="profiles">
+            <!-- Clickable Keiran profile, linking to /Keiran -->
+            <a href="/Keiran" class="profile">
+                <img src="https://raw.githubusercontent.com/timi2506/images-for-website/refs/heads/main/KeiransPFP.jpeg" alt="Keiran's Profile">
+                <p>Keiran</p>
+            </a>
+            <!-- Clickable Tim profile, linking to /Tim -->
+            <a href="/Tim" class="profile">
+                <img src="https://raw.githubusercontent.com/timi2506/images-for-website/refs/heads/main/TimsPFP.png" alt="Tim's Profile">
+                <p>Tim</p>
+            </a>
+            <!-- Clickable Ronan profile, linking to the BSky profile -->
+            <a href="https://bsky.app/profile/ronan.ispost.ing" class="profile">
+                <img src="https://raw.githubusercontent.com/chirpimageupload/chirp-post-images/main/image_1729871270973_252b8b87-78cf-400c-9395-d30b6f856e43.jpg" alt="Ronan's Profile">
+                <p>Ronan</p>
+            </a>
+        </div>
+        <!-- Button to navigate to /other -->
+        <a href="/other" class="navigate-button">Go to Other</a>
+    </div>
+</body>
+</html>
