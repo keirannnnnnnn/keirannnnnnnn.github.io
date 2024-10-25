@@ -37,18 +37,22 @@ body {
     border-color: #fff; /* Change border color on hover */
 }
 
-.preview {
+.preview-container {
     display: none; /* Initially hidden */
     position: absolute;
     top: 100%; /* Position below the link */
     left: 0;
     width: 300px; /* Width of the preview */
     height: 200px; /* Height of the preview */
-    border: none;
-    background-color: rgba(255, 255, 255, 0.1);
     z-index: 1;
 }
 
-.link-item:hover .preview {
+.link-item:hover .preview-container {
     display: block; /* Show preview on hover */
+}
+
+.preview {
+    width: 100%; /* Full width of the container */
+    height: 100%; /* Full height of the container */
+    border: none;
 }
