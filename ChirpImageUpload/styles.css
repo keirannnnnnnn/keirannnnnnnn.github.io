@@ -39,15 +39,27 @@ button {
     margin-top: 10px;
     padding: 10px 15px;
     font-size: 16px;
-    background-color: #28a745; /* Green button background */
-    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
+#uploadButton {
+    background-color: #28a745; /* Green button background */
+    color: white;
+}
+
+#uploadButton:hover {
     background-color: #218838; /* Darker green on hover */
+}
+
+#copyUrlButton {
+    background-color: #6c757d; /* Grey button background */
+    color: white;
+}
+
+#copyUrlButton:hover {
+    background-color: #5a6268; /* Darker grey on hover */
 }
 
 .loading {
