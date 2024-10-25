@@ -18,7 +18,7 @@
     <div id="output"></div>
 
     <script>
-        const GITHUB_TOKEN = "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";
+        const GITHUB_TOKEN = "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"; // Your GitHub Token
         const REPO_OWNER = "chirpimageupload";
         const REPO_NAME = "chirp-post-images";
 
@@ -44,7 +44,7 @@
                     const response = await fetch(url, {
                         method: "PUT",
                         headers: {
-                            "Authorization": `Bearer ${GITHUB_TOKEN}`,
+                            "Authorization": `token ${GITHUB_TOKEN}`, // Use the token here
                             "Content-Type": "application/json",
                             "Accept": "application/vnd.github.v3+json"
                         },
