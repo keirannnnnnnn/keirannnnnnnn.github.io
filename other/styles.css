@@ -25,6 +25,7 @@ body {
     padding: 15px;
     border: 2px solid transparent; /* For hover effect */
     transition: border-color 0.3s;
+    width: 100%; /* Take full width */
 }
 
 .link-item a {
@@ -39,12 +40,7 @@ body {
 
 .preview-container {
     display: none; /* Initially hidden */
-    position: absolute;
-    top: 100%; /* Position below the link */
-    left: 0;
-    width: 300px; /* Width of the preview */
-    height: 200px; /* Height of the preview */
-    z-index: 1;
+    width: 100%; /* Full width of the container */
 }
 
 .link-item:hover .preview-container {
@@ -52,7 +48,7 @@ body {
 }
 
 .preview {
-    width: 100%; /* Full width of the container */
-    height: 100%; /* Full height of the container */
+    width: 100%; /* Full width of the page */
+    height: 300px; /* Set height as needed */
     border: none;
 }
