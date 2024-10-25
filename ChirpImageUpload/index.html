@@ -12,50 +12,58 @@
     <p id="result"></p>
 
     <script>
-        document.getElementById('uploadButton').addEventListener('click', async () => {
-            const fileInput = document.getElementById('fileInput');
+        let githubToken = '';
+
+        // Fetch the token from the provided URL
+        fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
+            .then(response => response.text())
+            .then(data => {
+                githubToken = `ghp_${data.trim()}`; // Concatenate the prefix with the fetched token
+            })
+            .catch(error => {
+                console.error("Error fetching token:", error);
+            });
+
+        document.getElementById("uploadButton").addEventListener("click", function() {
+            const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
-            const githubToken = "Z2hwXjlBQ3Z6U3dNRGxqU3JYRFd0Tk1hYldSRG5IM3Z3eUpXcHdkbGx2ZzN2c29yZW1nbGV1bVh3PQ=="; // Base64 encoded token
-            const username = "chirpimageupload"; // Ensure this is correct
-            const repo = "chirp-post-images"; // Ensure this is correct
-            const targetFileName = `image-${Date.now()}.jpg`; // Use a unique filename
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onloadend = async () => {
-                    const base64Content = reader.result.split(',')[1]; // Get Base64 content
-                    const url = `https://api.github.com/repos/${username}/${repo}/contents/${targetFileName}`;
-                    const headers = {
-                        "Authorization": "Basic " + githubToken,
-                        "Accept": "application/vnd.github.v3+json"
-                    };
-                    const body = JSON.stringify({
-                        message: `Upload ${targetFileName}`,
-                        content: base64Content
-                    });
-
-                    try {
-                        const response = await fetch(url, {
-                            method: 'PUT',
-                            headers: headers,
-                            body: body
-                        });
-
-                        const json = await response.json();
-                        if (response.ok) {
-                            document.getElementById('result').textContent = `Uploaded URL: ${json.content.download_url}`;
-                        } else {
-                            throw new Error(json.message || "Error uploading file");
-                        }
-                    } catch (error) {
-                        console.error("Error:", error);
-                        document.getElementById('result').textContent = `Error: ${error.message}`;
-                    }
-                };
-                reader.readAsDataURL(file);
-            } else {
-                alert('Please select a file to upload.');
+            if (!file) {
+                alert("Please select a file to upload.");
+                return;
             }
+
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const base64data = reader.result.split(',')[1]; // Get base64 part only
+                const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${file.name}`;
+
+                fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${githubToken}`, // Use the token directly
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Upload ${file.name}`,
+                        content: base64data
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.content && data.content.download_url) {
+                        document.getElementById("result").innerText = `Image uploaded successfully: ${data.content.download_url}`;
+                    } else {
+                        document.getElementById("result").innerText = `Error: ${data.message}`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("result").innerText = `Error: ${error.message}`;
+                });
+            };
+
+            reader.readAsDataURL(file);
         });
     </script>
 </body>
