@@ -3,28 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload to GitHub</title>
-    <style>
-        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
-        #uploadBtn { margin-top: 10px; }
-        img { max-width: 300px; margin-top: 20px; }
-        #link { color: blue; cursor: pointer; }
-    </style>
+    <title>Upload Image to GitHub</title>
 </head>
 <body>
     <h2>Upload Image to GitHub</h2>
     <input type="file" id="imageInput" accept="image/*">
-    <button id="uploadBtn" onclick="uploadImage()">Upload</button>
+    <button id="uploadBtn">Upload</button>
     <div id="output"></div>
 
     <script>
-        const GITHUB_TOKEN = "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"; // Your GitHub Token
-        const REPO_OWNER = "chirpimageupload";
-        const REPO_NAME = "chirp-post-images";
-
-        async function uploadImage() {
-            const fileInput = document.getElementById('imageInput');
-            const output = document.getElementById('output');
+        document.getElementById("uploadBtn").onclick = async () => {
+            const fileInput = document.getElementById("imageInput");
+            const output = document.getElementById("output");
             output.innerHTML = "";
 
             if (!fileInput.files.length) {
@@ -33,44 +23,45 @@
             }
 
             const file = fileInput.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = async () => {
-                const base64Content = reader.result.split(",")[1];
-                const fileName = `image-${Date.now()}.jpg`;
-                const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+            const base64Content = await toBase64(file);
 
-                try {
-                    const response = await fetch(url, {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${GITHUB_TOKEN}`, // Use the token here
-                            "Content-Type": "application/json",
-                            "Accept": "application/vnd.github.v3+json"
-                        },
-                        body: JSON.stringify({
-                            message: `Upload ${fileName}`,
-                            content: base64Content
-                        })
-                    });
+            const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${file.name}`;
+            const GITHUB_TOKEN = "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"; // Your GitHub Token
 
-                    const data = await response.json();
-                    if (response.ok && data.content && data.content.download_url) {
-                        output.innerHTML = `
-                            <p>Image uploaded successfully!</p>
-                            <a id="link" href="${data.content.download_url}" target="_blank">${data.content.download_url}</a>
-                            <br>
-                            <img src="${data.content.download_url}" alt="Uploaded Image">
-                        `;
-                    } else {
-                        throw new Error(data.message || "Failed to upload image.");
-                    }
-                } catch (error) {
-                    output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            try {
+                const response = await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GITHUB_TOKEN}`,
+                        "Content-Type": "application/json",
+                        "Accept": "application/vnd.github.v3+json"
+                    },
+                    body: JSON.stringify({
+                        message: `Upload ${file.name}`,
+                        content: base64Content
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const rawUrl = data.content.download_url;
+                    output.innerHTML = `<p>Image uploaded successfully!</p><a href="${rawUrl}" target="_blank">${rawUrl}</a>`;
+                } else {
+                    throw new Error(data.message);
                 }
-            };
+            } catch (error) {
+                output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            }
+        };
 
-            reader.readAsDataURL(file);
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]); // Extract base64 string
+                reader.onerror = error => reject(error);
+            });
         }
     </script>
 </body>
