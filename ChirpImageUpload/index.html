@@ -4,98 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChirpImageUpload</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your external stylesheet -->
-    <style>
-        /* General styles */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f0f0f5; /* Light macOS background */
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #1d1d1f; /* Darker text color for contrast */
-        }
-
-        /* Input styles */
-        input[type="file"] {
-            display: none; /* Hide the default file input */
-        }
-
-        /* Custom file upload button */
-        .file-upload {
-            padding: 12px 20px;
-            font-size: 1rem;
-            color: #fff;
-            background-color: #007aff; /* macOS blue */
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .file-upload:hover {
-            background-color: #0051e3; /* Darker blue on hover */
-        }
-
-        /* Button styles */
-        button {
-            padding: 12px 20px;
-            font-size: 1rem;
-            color: #fff;
-            background-color: #28a745; /* Success green */
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #218838; /* Darker green on hover */
-        }
-
-        /* Result message styles */
-        #result {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            color: #555; /* Lighter text color */
-            text-align: center;
-        }
-
-        /* Copy URL button */
-        #copyUrlButton {
-            background-color: #6c757d; /* Grey color for copy button */
-        }
-
-        #copyUrlButton:hover {
-            background-color: #5a6268; /* Darker grey on hover */
-        }
-
-        /* Responsive styles */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem; /* Smaller font size on mobile */
-            }
-
-            button, .file-upload {
-                width: 100%; /* Full width buttons on mobile */
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the separate CSS file -->
 </head>
 <body>
     <h1>ChirpImageUpload</h1>
-    <label for="fileInput" class="file-upload">Select Image</label>
     <input type="file" id="fileInput" accept="image/*">
-    <button id="uploadButton">Upload</button>
+    <button id="uploadButton" class="file-upload">Upload</button>
     <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
     <p id="result"></p>
 
