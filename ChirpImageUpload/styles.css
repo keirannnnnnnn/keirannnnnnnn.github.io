@@ -1,48 +1,79 @@
 /* General styles */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #000; /* Black background */
-    color: #fff; /* White text for contrast */
     margin: 0;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
 }
 
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ffffff; /* White background */
+        color: #000000; /* Black text */
+    }
+
+    button, .file-upload {
+        background-color: #007aff; /* macOS blue */
+    }
+
+    button:hover, .file-upload:hover {
+        background-color: #0051e3; /* Darker blue on hover */
+    }
+
+    #copyUrlButton {
+        background-color: #6c757d; /* Grey color for copy button */
+    }
+
+    #copyUrlButton:hover {
+        background-color: #5a6268; /* Darker grey on hover */
+    }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000000; /* Black background */
+        color: #ffffff; /* White text */
+    }
+
+    button, .file-upload {
+        background-color: #28a745; /* Success green */
+    }
+
+    button:hover {
+        background-color: #218838; /* Darker green on hover */
+    }
+
+    #result {
+        color: #ffffff; /* White text for result message */
+    }
+
+    #copyUrlButton {
+        background-color: #6c757d; /* Grey color for copy button */
+    }
+
+    #copyUrlButton:hover {
+        background-color: #5a6268; /* Darker grey on hover */
+    }
+}
+
+/* Common styles for all modes */
 h1 {
     font-size: 2.5rem;
     margin-bottom: 20px;
-    color: #fff; /* White text for the heading */
 }
 
-/* Input styles */
 input[type="file"] {
     display: none; /* Hide the default file input */
 }
 
-/* Custom file upload button */
 .file-upload {
     padding: 12px 20px;
     font-size: 1rem;
-    color: #fff;
-    background-color: #007aff; /* macOS blue */
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.file-upload:hover {
-    background-color: #0051e3; /* Darker blue on hover */
-}
-
-/* Button styles */
-button {
-    padding: 12px 20px;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #28a745; /* Success green */
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -50,25 +81,20 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #218838; /* Darker green on hover */
+button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s;
 }
 
-/* Result message styles */
 #result {
     margin-top: 20px;
     font-size: 1.1rem;
-    color: #fff; /* White text for result message */
     text-align: center;
-}
-
-/* Copy URL button */
-#copyUrlButton {
-    background-color: #6c757d; /* Grey color for copy button */
-}
-
-#copyUrlButton:hover {
-    background-color: #5a6268; /* Darker grey on hover */
 }
 
 /* Responsive styles */
