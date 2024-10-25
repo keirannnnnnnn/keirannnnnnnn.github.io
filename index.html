@@ -24,6 +24,30 @@
         .navigate-button:hover {
             background-color: #0056b3;
         }
+        
+        .profiles {
+            display: flex;
+            flex-direction: column; /* Stack profiles vertically */
+            align-items: center; /* Center align */
+            gap: 20px; /* Add spacing between profiles */
+        }
+
+        .profile img {
+            width: 100px; /* Set a uniform width for the profile pictures */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 50%; /* Make the image round */
+        }
+
+        .profile {
+            text-align: center; /* Center align text */
+            text-decoration: none; /* Remove underline from links */
+            color: black; /* Change text color */
+            transition: transform 0.3s; /* Smooth hover effect */
+        }
+
+        .profile:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
     </style>
 </head>
 <body>
@@ -39,6 +63,11 @@
             <a href="/Tim" class="profile">
                 <img src="https://raw.githubusercontent.com/timi2506/images-for-website/refs/heads/main/TimsPFP.png" alt="Tim's Profile">
                 <p>Tim</p>
+            </a>
+            <!-- Clickable Ronan profile, linking to his bsky profile -->
+            <a href="https://bsky.app/profile/ronan.ispost.ing" class="profile" target="_blank">
+                <img src="https://raw.githubusercontent.com/chirpimageupload/chirp-post-images/main/image_1729871270973_252b8b87-78cf-400c-9395-d30b6f856e43.jpg" alt="Ronan's Profile">
+                <p>Ronan</p>
             </a>
         </div>
         <!-- Button to navigate to /other -->
