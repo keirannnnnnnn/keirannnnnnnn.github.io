@@ -3,68 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Image to GitHub</title>
+    <title>Image Upload to GitHub</title>
 </head>
 <body>
-    <h2>Upload Image to GitHub</h2>
-    <input type="file" id="imageInput" accept="image/*">
-    <button id="uploadBtn">Upload</button>
-    <div id="output"></div>
+    <h1>Upload Image to GitHub</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button id="uploadButton">Upload</button>
+    <p id="result"></p>
 
     <script>
-        // Base64 encoded GitHub token
-        const encodedToken = "Z2hwXzlBVmN6U2t4N2VLVlJJYTRWdUR4TVJkVE1tcWc0TVhnbUd0"; 
-
-        document.getElementById("uploadBtn").onclick = async () => {
-            const fileInput = document.getElementById("imageInput");
-            const output = document.getElementById("output");
-            output.innerHTML = "";
-
-            if (!fileInput.files.length) {
-                alert("Please select an image.");
-                return;
-            }
-
+        document.getElementById('uploadButton').addEventListener('click', async () => {
+            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-            const base64Content = await toBase64(file);
+            const githubToken = "Z2hwXjlBQ3Z6U3dNRGxqU3JYRFd0Tk1hYldSRG5IM3Z3eUpXcHdkbGx2ZzN2c29yZW1nbGV1bVh3PQ=="; // Base64 encoded token
+            const username = "chirpimageupload"; // Ensure this is correct
+            const repo = "chirp-post-images"; // Ensure this is correct
+            const targetFileName = `image-${Date.now()}.jpg`; // Use a unique filename
 
-            const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${file.name}`;
-
-            try {
-                const response = await fetch(url, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `Basic ${encodedToken}`, // Use Basic auth with Base64 encoded token
-                        "Content-Type": "application/json",
-                        "Accept": "application/vnd.github.v3+json"
-                    },
-                    body: JSON.stringify({
-                        message: `Upload ${file.name}`,
-                        content: base64Content
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    const rawUrl = data.content.download_url;
-                    output.innerHTML = `<p>Image uploaded successfully!</p><a href="${rawUrl}" target="_blank">${rawUrl}</a>`;
-                } else {
-                    throw new Error(data.message);
-                }
-            } catch (error) {
-                output.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-            }
-        };
-
-        function toBase64(file) {
-            return new Promise((resolve, reject) => {
+            if (file) {
                 const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const base64Content = reader.result.split(',')[1]; // Get Base64 content
+                    const url = `https://api.github.com/repos/${username}/${repo}/contents/${targetFileName}`;
+                    const headers = {
+                        "Authorization": "Basic " + githubToken,
+                        "Accept": "application/vnd.github.v3+json"
+                    };
+                    const body = JSON.stringify({
+                        message: `Upload ${targetFileName}`,
+                        content: base64Content
+                    });
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: body
+                        });
+
+                        const json = await response.json();
+                        if (response.ok) {
+                            document.getElementById('result').textContent = `Uploaded URL: ${json.content.download_url}`;
+                        } else {
+                            throw new Error(json.message || "Error uploading file");
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        document.getElementById('result').textContent = `Error: ${error.message}`;
+                    }
+                };
                 reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]); // Extract base64 string
-                reader.onerror = error => reject(error);
-            });
-        }
+            } else {
+                alert('Please select a file to upload.');
+            }
+        });
     </script>
 </body>
 </html>
