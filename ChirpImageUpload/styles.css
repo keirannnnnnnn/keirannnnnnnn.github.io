@@ -2,8 +2,8 @@ body {
     font-family: 'Noto Sans', sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
 }
 
 h1 {
@@ -18,7 +18,7 @@ input[type="file"] {
     display: inline-block;
     padding: 10px 15px;
     font-size: 16px;
-    background-color: #007BFF;
+    background-color: #3a3a3a; /* Dark button background */
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -26,7 +26,7 @@ input[type="file"] {
 }
 
 .file-upload:hover {
-    background-color: #0056b3;
+    background-color: #5a5a5a; /* Lighter dark button on hover */
 }
 
 button {
@@ -34,7 +34,7 @@ button {
     margin-top: 10px;
     padding: 10px 15px;
     font-size: 16px;
-    background-color: #28a745;
+    background-color: #3a3a3a; /* Dark button background */
     color: white;
     border: none;
     border-radius: 5px;
@@ -42,41 +42,9 @@ button {
 }
 
 button:hover {
-    background-color: #218838;
+    background-color: #5a5a5a; /* Lighter dark button on hover */
 }
 
 p {
     text-align: center;
-}
-
-/* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-    body {
-        --background-color: #121212;
-        --text-color: #e0e0e0;
-    }
-
-    .file-upload {
-        background-color: #3a3a3a;
-    }
-
-    button {
-        background-color: #3a3a3a;
-    }
-}
-
-/* Light mode styles */
-@media (prefers-color-scheme: light) {
-    body {
-        --background-color: #ffffff;
-        --text-color: #000000;
-    }
-
-    .file-upload {
-        background-color: #007BFF;
-    }
-
-    button {
-        background-color: #28a745;
-    }
 }
