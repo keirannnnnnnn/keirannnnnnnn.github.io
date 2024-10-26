@@ -18,6 +18,7 @@
     <div id="logArea" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
         <h3>Log:</h3>
         <p id="result"></p>
+        <p id="nonShortenedUrl" style="color: grey; display: none;">Non-shortened URL: <span id="nonShortenedUrlValue"></span></p>
     </div>
 
     <script>
@@ -74,6 +75,8 @@
                     if (data.content && data.content.download_url) {
                         uploadedUrl = data.content.download_url; // Store the uploaded image's URL
                         document.getElementById("result").innerText = `Image uploaded successfully: ${uploadedUrl}`;
+                        document.getElementById("nonShortenedUrlValue").innerText = uploadedUrl; // Display the non-shortened URL
+                        document.getElementById("nonShortenedUrl").style.display = 'block'; // Show the non-shortened URL text
                         shortenUrl(uploadedUrl); // Call the shortenUrl function
                     } else {
                         document.getElementById("result").innerText = `Error: ${data.message}`;
