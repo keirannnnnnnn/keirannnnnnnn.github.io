@@ -7,70 +7,56 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>ChirpImageUpload</h1>
-    <button id="selectFileButton">Select File</button>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-    <button id="uploadButton">Upload</button>
-    <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
-    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
-    <p id="result"></p>
-    
-    <!-- Log Text Box -->
-    <textarea id="logBox" readonly style="width: 100%; height: 150px; margin-top: 20px;"></textarea>
+    <div class="container">
+        <h1>ChirpImageUpload</h1>
+        
+        <!-- File selection and upload buttons -->
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="uploadButton">Upload</button>
+        <button id="copyUrlButton" style="display: none;">Copy Shortened URL</button>
+        
+        <!-- Result output and logging -->
+        <p id="result"></p>
+        <textarea id="logBox" readonly></textarea>
+    </div>
 
     <script>
-        let githubToken = '';
-        let uploadedUrl = '';
+        let githubToken = ''; // GitHub token placeholder
+        let uploadedUrl = ''; // Store the uploaded image's URL
 
-        // Fetch GitHub token and add 'ghp_' prefix
+        // Fetch the GitHub token
         fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
             .then(response => response.text())
             .then(data => {
-                githubToken = `ghp_${data.trim()}`;
-                logMessage("GitHub token fetched successfully.");
+                githubToken = `ghp_${data.trim()}`; // Add "ghp_" prefix
+                logMessage("GitHub token loaded successfully.");
             })
             .catch(error => {
                 console.error("Error fetching token:", error);
                 logMessage("Error fetching GitHub token.");
             });
 
-        // Log function to update the logBox
-        function logMessage(message) {
-            const logBox = document.getElementById("logBox");
-            logBox.value += `${new Date().toLocaleTimeString()}: ${message}\n`;
-            logBox.scrollTop = logBox.scrollHeight;
-        }
-
-        // Select File Button
-        document.getElementById("selectFileButton").addEventListener("click", function() {
-            document.getElementById("fileInput").click();
-            logMessage("File selection opened.");
-        });
-
-        // Upload Button
+        // Add event listener for upload button
         document.getElementById("uploadButton").addEventListener("click", function() {
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
 
             if (!file) {
                 alert("Please select a file to upload.");
-                logMessage("Upload failed: No file selected.");
+                logMessage("No file selected for upload.");
                 return;
             }
 
-            document.getElementById("loadingSpinner").style.display = 'inline-block';
-            logMessage("Uploading file...");
-
             const reader = new FileReader();
             reader.onloadend = function() {
-                const base64data = reader.result.split(',')[1];
+                const base64data = reader.result.split(',')[1]; // Extract base64
                 const randomFileName = `image_${Date.now()}_${generateUUID()}.jpg`;
                 const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${randomFileName}`;
 
                 fetch(url, {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `token ${githubToken}`,
+                        'Authorization': `token ${githubToken}`, // GitHub token
                         'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
@@ -83,41 +69,31 @@
                 .then(data => {
                     if (data.content && data.content.download_url) {
                         uploadedUrl = data.content.download_url;
-                        logMessage("File uploaded successfully.");
-                        shortenUrl(uploadedUrl);
+                        logMessage(`Image uploaded to GitHub: ${uploadedUrl}`);
+                        document.getElementById("result").innerText = `Image uploaded successfully. Shortening URL...`;
+                        shortenUrl(uploadedUrl); // Call URL shortening function
                     } else {
-                        document.getElementById("result").innerText = `Error: ${data.message}`;
-                        logMessage(`Error uploading file: ${data.message}`);
+                        throw new Error(data.message);
                     }
                 })
                 .catch(error => {
+                    console.error("Error uploading file:", error);
                     document.getElementById("result").innerText = `Error: ${error.message}`;
                     logMessage(`Error uploading file: ${error.message}`);
-                })
-                .finally(() => {
-                    document.getElementById("loadingSpinner").style.display = 'none';
                 });
             };
 
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // Read file as data URL
         });
 
-        // Generate UUID
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        // Shorten URL
+        // Function to shorten the URL
         function shortenUrl(rawUrl) {
-            logMessage("Shortening URL...");
+            logMessage("Attempting to shorten URL...");
 
             fetch("https://api.short.io/links", {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'pk_fZwd9k9ZXkgoNhoM',
+                    'Authorization': 'pk_oglvoEi8T9qwF2Bm', // Short.io API token
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -125,28 +101,48 @@
                     "originalURL": rawUrl
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API responded with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.shortURL) {
                     const shortUrl = data.shortURL;
-                    document.getElementById("result").innerText = `Image uploaded successfully: ${shortUrl}`;
+                    document.getElementById("result").innerText = `Shortened URL: ${shortUrl}`;
                     document.getElementById("copyUrlButton").style.display = 'inline';
                     document.getElementById("copyUrlButton").onclick = () => {
                         navigator.clipboard.writeText(shortUrl).then(() => {
-                            alert("Shortened Image URL copied to clipboard!");
+                            alert("Shortened URL copied to clipboard!");
                             logMessage("Shortened URL copied to clipboard.");
                         });
                     };
                     logMessage("URL shortened successfully.");
                 } else {
-                    document.getElementById("result").innerText = "Error shortening URL.";
-                    logMessage("Error shortening URL.");
+                    throw new Error("Short URL not found in response.");
                 }
             })
             .catch(error => {
                 console.error("Error shortening URL:", error);
-                logMessage("Error shortening URL.");
+                document.getElementById("result").innerText = "Error shortening URL. Please check the log.";
+                logMessage(`Error shortening URL: ${error.message}`);
             });
+        }
+
+        // Function to generate a random UUID
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Log message to the log box
+        function logMessage(message) {
+            const logBox = document.getElementById("logBox");
+            logBox.value += `${new Date().toLocaleTimeString()}: ${message}\n`;
+            logBox.scrollTop = logBox.scrollHeight; // Auto-scroll to the bottom
         }
     </script>
 </body>
