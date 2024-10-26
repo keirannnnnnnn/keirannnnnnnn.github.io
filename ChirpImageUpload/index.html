@@ -34,7 +34,7 @@
             document.getElementById("fileInput").click();
         });
 
-        // Upload file to GitHub and shorten URL
+        // Event listener to start upload when button clicked
         document.getElementById("uploadButton").addEventListener("click", function() {
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
@@ -97,7 +97,7 @@
             fetch("https://api.short.io/links", {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'pk_fZwd9k9ZXkgoNhoM', // Replace with your Short.io API key
+                    'Authorization': 'pk_fZwd9k9ZXkgoNhoM', // Short.io API key
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
