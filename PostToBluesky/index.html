@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Post</title>
+    <script>
+        async function sendPost() {
+            // Get values from text fields
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message").value;
 
+            // Check if fields are filled
+            if (!username || !password || !message) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            try {
+                // Login to get access token
+                const loginResponse = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ identifier: username, password: password })
+                });
+
+                if (!loginResponse.ok) {
+                    throw new Error("Login failed. Please check your credentials.");
+                }
+
+                const loginData = await loginResponse.json();
+                const accessJwt = loginData.accessJwt;
+                const did = loginData.did;
+
+                // Prepare the post content
+                const postContent = {
+                    collection: "app.bsky.feed.post",
+                    repo: did,
+                    record: {
+                        "$type": "app.bsky.feed.post",
+                        text: message,
+                        createdAt: new Date().toISOString()
+                    }
+                };
+
+                // Send the post request
+                const postResponse = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessJwt}`
+                    },
+                    body: JSON.stringify(postContent)
+                });
+
+                if (!postResponse.ok) {
+                    throw new Error("Failed to post the message.");
+                }
+
+                alert("Message posted successfully!");
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Bluesky Post</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"><br><br>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br><br>
+    
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+    
+    <button onclick="sendPost()">Send</button>
+</body>
+</html>
