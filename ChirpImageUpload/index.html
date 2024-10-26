@@ -8,18 +8,17 @@
 </head>
 <body>
     <h1>ChirpImageUpload</h1>
-    <label for="fileInput" class="file-upload">Select File</label>
-    <input type="file" id="fileInput" accept="image/*">
-    <button id="uploadButton">Upload</button>
-    <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
-    <div class="loading" id="loadingSpinner"></div>
+    <input type="file" id="fileInput" accept="image/*" class="file-input">
+    <button id="uploadButton" class="upload-button">Upload</button>
+    <button id="copyUrlButton" class="copy-button" style="display: none;">Copy Image Link</button>
+    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
     <p id="result"></p>
 
     <script>
         let githubToken = '';
-        let uploadedUrl = ''; // To store the uploaded image's URL
+        let uploadedUrl = ''; // To store the uploaded image's raw URL
 
-        // Fetch the token from the provided URL
+        // Fetch the GitHub token from a remote file
         fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
             .then(response => response.text())
             .then(data => {
@@ -29,6 +28,7 @@
                 console.error("Error fetching token:", error);
             });
 
+        // Upload file to GitHub
         document.getElementById("uploadButton").addEventListener("click", function() {
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
@@ -41,7 +41,7 @@
             const reader = new FileReader();
             reader.onloadend = function() {
                 const base64data = reader.result.split(',')[1]; // Get base64 part only
-                
+
                 // Generate a random filename using UUID and current timestamp
                 const randomFileName = `image_${Date.now()}_${generateUUID()}.jpg`;
                 const url = `https://api.github.com/repos/chirpimageupload/chirp-post-images/contents/${randomFileName}`;
@@ -49,6 +49,7 @@
                 // Show the loading spinner
                 document.getElementById("loadingSpinner").style.display = 'block';
 
+                // Upload image to GitHub
                 fetch(url, {
                     method: 'PUT',
                     headers: {
@@ -68,8 +69,7 @@
 
                     if (data.content && data.content.download_url) {
                         uploadedUrl = data.content.download_url; // Store the uploaded image's URL
-                        document.getElementById("result").innerText = `Image uploaded successfully: ${uploadedUrl}`;
-                        document.getElementById("copyUrlButton").style.display = 'inline'; // Show the copy button
+                        shortenUrl(uploadedUrl); // Shorten the raw URL
                     } else {
                         document.getElementById("result").innerText = `Error: ${data.message}`;
                     }
@@ -92,14 +92,37 @@
             });
         }
 
-        // Copy the raw URL to clipboard when the button is clicked
-        document.getElementById("copyUrlButton").addEventListener("click", function() {
-            navigator.clipboard.writeText(uploadedUrl).then(() => {
-                alert("Raw Image URL copied to clipboard!");
-            }, (err) => {
-                console.error('Could not copy text: ', err);
+        // Shorten URL using Short.io API
+        function shortenUrl(longUrl) {
+            fetch("https://api.short.io/links", {
+                method: "POST",
+                headers: {
+                    "Authorization": "pk_fZwd9k9ZXkgoNhoM",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "domain": "grxm.short.gy",
+                    "originalURL": longUrl
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const shortenedUrl = data.shortURL; // Get the shortened URL
+                document.getElementById("result").innerText = `Image uploaded successfully: ${shortenedUrl}`;
+                document.getElementById("copyUrlButton").style.display = 'inline'; // Show the copy button
+
+                // Copy shortened URL to clipboard
+                navigator.clipboard.writeText(shortenedUrl).then(() => {
+                    alert("Shortened Image URL copied to clipboard!");
+                }, (err) => {
+                    console.error('Could not copy text: ', err);
+                });
+            })
+            .catch(error => {
+                document.getElementById("result").innerText = `Error: ${error.message}`;
+                console.error("Error shortening URL:", error);
             });
-        });
+        }
     </script>
 </body>
 </html>
