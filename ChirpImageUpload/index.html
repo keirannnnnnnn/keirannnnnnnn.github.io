@@ -13,11 +13,17 @@
     <input type="file" id="fileInput" accept="image/*" style="display: none;">
     <button id="uploadButton">Upload</button>
     <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
-    <p id="result"></p>
+    
+    <!-- Log area -->
+    <div id="logArea" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
+        <h3>Log:</h3>
+        <p id="result"></p>
+    </div>
 
     <script>
         let githubToken = '';
         let uploadedUrl = ''; // To store the uploaded image's URL
+        let shortUrl = ''; // To store the shortened URL
 
         // Fetch the token from the provided URL
         fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
@@ -91,8 +97,8 @@
 
         // Copy the raw URL to clipboard when the button is clicked
         document.getElementById("copyUrlButton").addEventListener("click", function() {
-            navigator.clipboard.writeText(uploadedUrl).then(() => {
-                alert("Raw Image URL copied to clipboard!");
+            navigator.clipboard.writeText(shortUrl).then(() => {
+                alert("Shortened URL copied to clipboard!");
             }, (err) => {
                 console.error('Could not copy text: ', err);
             });
@@ -114,14 +120,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.shortURL) {
-                    const shortUrl = data.shortURL;
-                    document.getElementById("result").innerText = `Shortened URL: ${shortUrl}`;
+                    shortUrl = data.shortURL; // Store the shortened URL
+                    document.getElementById("result").innerText += `\nShortened URL: ${shortUrl}`; // Append the shortened URL
                     document.getElementById("copyUrlButton").style.display = 'inline';
-                    document.getElementById("copyUrlButton").onclick = () => {
-                        navigator.clipboard.writeText(shortUrl).then(() => {
-                            alert("Shortened URL copied to clipboard!");
-                        });
-                    };
                 } else {
                     document.getElementById("result").innerText = "Error shortening URL.";
                 }
