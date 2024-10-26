@@ -22,7 +22,7 @@
         let githubToken = '';
         let uploadedUrl = '';
 
-        // Fetch GitHub token
+        // Fetch GitHub token and add 'ghp_' prefix
         fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
             .then(response => response.text())
             .then(data => {
