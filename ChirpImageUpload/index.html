@@ -14,37 +14,52 @@
     <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
     <div id="loadingSpinner" class="spinner" style="display: none;"></div>
     <p id="result"></p>
+    
+    <!-- Log Text Box -->
+    <textarea id="logBox" readonly style="width: 100%; height: 150px; margin-top: 20px;"></textarea>
 
     <script>
         let githubToken = '';
-        let uploadedUrl = ''; // Store the uploaded image's raw URL
+        let uploadedUrl = '';
 
         // Fetch GitHub token
         fetch('https://raw.githubusercontent.com/timi2506/chirp-image-uploadtoken/refs/heads/main/token.txt')
             .then(response => response.text())
             .then(data => {
                 githubToken = `ghp_${data.trim()}`;
+                logMessage("GitHub token fetched successfully.");
             })
             .catch(error => {
                 console.error("Error fetching token:", error);
+                logMessage("Error fetching GitHub token.");
             });
 
-        // "Select File" button to trigger hidden file input
+        // Log function to update the logBox
+        function logMessage(message) {
+            const logBox = document.getElementById("logBox");
+            logBox.value += `${new Date().toLocaleTimeString()}: ${message}\n`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // Select File Button
         document.getElementById("selectFileButton").addEventListener("click", function() {
             document.getElementById("fileInput").click();
+            logMessage("File selection opened.");
         });
 
-        // Event listener to start upload when button clicked
+        // Upload Button
         document.getElementById("uploadButton").addEventListener("click", function() {
             const fileInput = document.getElementById("fileInput");
             const file = fileInput.files[0];
 
             if (!file) {
                 alert("Please select a file to upload.");
+                logMessage("Upload failed: No file selected.");
                 return;
             }
 
             document.getElementById("loadingSpinner").style.display = 'inline-block';
+            logMessage("Uploading file...");
 
             const reader = new FileReader();
             reader.onloadend = function() {
@@ -68,13 +83,16 @@
                 .then(data => {
                     if (data.content && data.content.download_url) {
                         uploadedUrl = data.content.download_url;
-                        shortenUrl(uploadedUrl); // Call Short.io to shorten the raw URL
+                        logMessage("File uploaded successfully.");
+                        shortenUrl(uploadedUrl);
                     } else {
                         document.getElementById("result").innerText = `Error: ${data.message}`;
+                        logMessage(`Error uploading file: ${data.message}`);
                     }
                 })
                 .catch(error => {
                     document.getElementById("result").innerText = `Error: ${error.message}`;
+                    logMessage(`Error uploading file: ${error.message}`);
                 })
                 .finally(() => {
                     document.getElementById("loadingSpinner").style.display = 'none';
@@ -84,7 +102,7 @@
             reader.readAsDataURL(file);
         });
 
-        // Generate a UUID
+        // Generate UUID
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -92,12 +110,14 @@
             });
         }
 
-        // Shorten URL using Short.io
+        // Shorten URL
         function shortenUrl(rawUrl) {
+            logMessage("Shortening URL...");
+
             fetch("https://api.short.io/links", {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'pk_fZwd9k9ZXkgoNhoM', // Short.io API key
+                    'Authorization': 'pk_fZwd9k9ZXkgoNhoM',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -114,14 +134,18 @@
                     document.getElementById("copyUrlButton").onclick = () => {
                         navigator.clipboard.writeText(shortUrl).then(() => {
                             alert("Shortened Image URL copied to clipboard!");
+                            logMessage("Shortened URL copied to clipboard.");
                         });
                     };
+                    logMessage("URL shortened successfully.");
                 } else {
                     document.getElementById("result").innerText = "Error shortening URL.";
+                    logMessage("Error shortening URL.");
                 }
             })
             .catch(error => {
                 console.error("Error shortening URL:", error);
+                logMessage("Error shortening URL.");
             });
         }
     </script>
