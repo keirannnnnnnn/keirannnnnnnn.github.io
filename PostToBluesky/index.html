@@ -3,79 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluesky Post</title>
+    <title>Post to Bluesky</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Post to Bluesky</h2>
+
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+        </div>
+
+        <button onclick="postToBluesky()">Send</button>
+    </div>
+
     <script>
-        async function sendPost() {
-            // Get values from text fields
+        async function postToBluesky() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
             const message = document.getElementById("message").value;
 
-            // Check if fields are filled
-            if (!username || !password || !message) {
-                alert("Please fill in all fields.");
-                return;
-            }
+            const loginResponse = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifier: username, password: password })
+            });
 
-            try {
-                // Login to get access token
-                const loginResponse = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ identifier: username, password: password })
-                });
+            const loginData = await loginResponse.json();
 
-                if (!loginResponse.ok) {
-                    throw new Error("Login failed. Please check your credentials.");
-                }
-
-                const loginData = await loginResponse.json();
-                const accessJwt = loginData.accessJwt;
-                const did = loginData.did;
-
-                // Prepare the post content
-                const postContent = {
-                    collection: "app.bsky.feed.post",
-                    repo: did,
-                    record: {
-                        "$type": "app.bsky.feed.post",
-                        text: message,
-                        createdAt: new Date().toISOString()
-                    }
-                };
-
-                // Send the post request
+            if (loginData.accessJwt && loginData.did) {
                 const postResponse = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${accessJwt}`
+                        "Authorization": `Bearer ${loginData.accessJwt}`
                     },
-                    body: JSON.stringify(postContent)
+                    body: JSON.stringify({
+                        collection: "app.bsky.feed.post",
+                        repo: loginData.did,
+                        record: {
+                            "$type": "app.bsky.feed.post",
+                            "text": message,
+                            "createdAt": new Date().toISOString()
+                        }
+                    })
                 });
 
-                if (!postResponse.ok) {
-                    throw new Error("Failed to post the message.");
+                if (postResponse.ok) {
+                    alert("Message posted successfully!");
+                } else {
+                    alert("Failed to post message.");
                 }
-
-                alert("Message posted successfully!");
-            } catch (error) {
-                alert(error.message);
+            } else {
+                alert("Login failed. Check your credentials.");
             }
         }
     </script>
-</head>
-<body>
-    <h2>Bluesky Post</h2>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"><br><br>
-    
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password"><br><br>
-    
-    <label for="message">Message:</label>
-    <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
-    
-    <button onclick="sendPost()">Send</button>
 </body>
 </html>
