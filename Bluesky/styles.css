@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 20px;
     background-color: #f9f9f9;
-    color: #333;
+    color: grey;
     transition: background-color 0.3s, color 0.3s;
     display: flex;
     justify-content: center; /* Center horizontally */
