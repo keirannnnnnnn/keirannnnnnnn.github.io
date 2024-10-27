@@ -10,24 +10,35 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212; /* Default dark background */
-            color: #E0E0E0; /* Default light grey text */
-            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+            background-color: #121212;
+            color: #E0E0E0;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .container {
             padding: 20px;
-            max-width: 480px; /* Restricting max width for better mobile view */
-            margin: auto; /* Center the container */
-            background: #1E1E1E; /* Default slightly lighter dark background */
-            border-radius: 16px; /* More rounded corners */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Softer shadow */
-            transition: background 0.3s; /* Smooth background transition */
+            max-width: 480px;
+            margin: auto;
+            background: #1E1E1E;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: background 0.3s;
+        }
+
+        /* Light mode styles */
+        body.light-mode {
+            background-color: #F4F4F9;
+            color: #333;
+        }
+
+        .container.light-mode {
+            background: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         h2, h3 {
             text-align: center;
-            color: #FFFFFF; /* White text for headings */
+            color: #FFFFFF;
         }
 
         #tabSystem {
@@ -37,70 +48,69 @@
         }
 
         #tabSystem button {
-            flex: 1; /* Make buttons flexible to fill the available space */
+            flex: 1;
             padding: 10px;
-            background: transparent; /* Transparent background for buttons */
+            background: transparent;
             border: none;
             cursor: pointer;
             font-size: 1em;
-            color: #A8A8A8; /* Light grey for non-active tabs */
+            color: #A8A8A8;
             position: relative;
-            border-radius: 12px; /* Rounded corners for buttons */
-            transition: color 0.3s, background 0.3s; /* Smooth transition for hover effect */
+            border-radius: 12px;
+            transition: color 0.3s, background 0.3s;
         }
 
         #tabSystem button:hover {
-            color: #FFFFFF; /* Highlight on hover */
-            background: rgba(255, 255, 255, 0.1); /* Light background on hover for buttons */
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         #tabSystem button.active {
-            color: #007AFF; /* Active tab color similar to macOS */
+            color: #007AFF;
         }
 
         #tabSystem button.active::after {
             content: '';
             display: block;
             height: 2px;
-            background: #007AFF; /* Blue line under active tab */
+            background: #007AFF;
             position: absolute;
             left: 0;
             right: 0;
-            bottom: -5px; /* Position below the button */
+            bottom: -5px;
         }
 
         #tabSystem button:not(.active) {
-            color: #A8A8A8; /* Light grey color for non-active tabs */
+            color: #A8A8A8;
         }
 
         .post {
             margin: 10px 0;
             padding: 10px;
-            background-color: #2C2C2C; /* Darker background for posts */
-            border-radius: 12px; /* Rounded corners for posts */
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); /* Softer shadow */
-            transition: background-color 0.3s; /* Smooth transition for posts */
+            background-color: #2C2C2C;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s;
+        }
+
+        /* Light mode for posts */
+        .post.light-mode {
+            background-color: #F9F9F9;
+            color: #333;
         }
 
         .post h4 {
             margin: 0 0 5px 0;
-            font-size: 1.1em; /* Slightly larger font for post title */
-            color: #FFFFFF; /* White text for post titles */
+            font-size: 1.1em;
+            color: #FFFFFF;
         }
 
         .post p {
             margin: 5px 0;
-            font-size: 0.9em; /* Smaller font for post content */
-            color: #B0B0B0; /* Grey for post content */
+            font-size: 0.9em;
+            color: #B0B0B0;
         }
 
-        .login-message {
-            margin-bottom: 20px;
-            color: #FFFFFF; /* White for login messages */
-            text-align: center;
-        }
-
-        /* Toggle Switch */
         .toggle-container {
             position: absolute;
             top: 20px;
@@ -114,9 +124,9 @@
             position: relative;
             width: 50px;
             height: 26px;
-            background: #007AFF; /* Default toggle color */
-            border-radius: 50px; /* Rounded edges for toggle */
-            transition: background 0.3s; /* Smooth transition for toggle */
+            background: #007AFF;
+            border-radius: 50px;
+            transition: background 0.3s;
         }
 
         .toggle::before {
@@ -124,52 +134,41 @@
             position: absolute;
             width: 22px;
             height: 22px;
-            border-radius: 50%; /* Round knob */
-            background: white; /* Knob color */
-            top: 2px; /* Position knob */
-            left: 2px; /* Position knob */
-            transition: transform 0.3s; /* Smooth transition for knob */
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
         }
 
         .toggle.active {
-            background: #FFCC00; /* Toggle color for light mode */
+            background: #FFCC00;
         }
 
         .toggle.active::before {
-            transform: translateX(24px); /* Move knob to the right */
+            transform: translateX(24px);
         }
 
         @media (max-width: 768px) {
             #tabSystem button {
-                font-size: 0.9em; /* Adjust button font size for smaller screens */
+                font-size: 0.9em;
             }
         }
     </style>
 </head>
 <body>
     <script>
-        // Redirect to mobile site if on mobile
-        if (window.innerWidth <= 768) {
-            window.location.href = "https://glos-omu.uk/Bluesky/mobile";
-        }
-
-        // Toggle dark/light mode
+        // Toggle between light and dark modes
         function toggleTheme() {
-            const body = document.body;
-            const container = document.querySelector('.container');
-            const posts = document.querySelectorAll('.post');
-            const toggle = document.getElementById('themeToggle');
-
-            body.classList.toggle('light-mode');
-            container.classList.toggle('light-mode');
-            posts.forEach(post => post.classList.toggle('light-mode'));
-
-            toggle.classList.toggle('active'); // Toggle the active state
+            document.body.classList.toggle('light-mode');
+            document.querySelector('.container').classList.toggle('light-mode');
+            document.querySelectorAll('.post').forEach(post => post.classList.toggle('light-mode'));
+            document.getElementById('themeToggle').classList.toggle('active');
         }
     </script>
 
-    <div class="toggle-container" id="themeToggle" onclick="toggleTheme()">
-        <div class="toggle"></div>
+    <div class="toggle-container" onclick="toggleTheme()">
+        <div class="toggle" id="themeToggle"></div>
     </div>
 
     <div class="container">
@@ -185,96 +184,10 @@
     </div>
 
     <script>
-        const apiUrl = "https://bsky.social/xrpc";
-        const targetUsers = {
-            "tim.glos-omu.uk": "tim.glos-omu.uk",
-            "keirannnnnnnn.glos-omu.uk": "keirannnnnnnn.glos-omu.uk"
-        };
-        let allPosts = []; // Store all fetched posts for filtering
-
-        async function fetchPosts() {
-            // Step 1: Fetch posts from target users
-            const postsData = await Promise.all(Object.keys(targetUsers).map(user => fetchUserPosts(user)));
-            allPosts = postsData.flat(); // Flatten the array of posts
-            displayPosts(allPosts);
-        }
-
-        async function fetchUserPosts(user) {
-            const response = await fetch(`${apiUrl}/com.atproto.repo.listRecords?repo=${user}&collection=app.bsky.feed.post`, {
-                method: "GET",
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                alert(`Failed to fetch posts for ${user}: ${errorData.message}`);
-                return [];
-            }
-
-            const posts = await response.json();
-            // Add username directly to each post
-            return (posts.records || []).map(post => ({
-                ...post,
-                username: targetUsers[user] // Add username based on the user who posted
-            }));
-        }
-
-        function displayPosts(posts) {
-            const postsContainer = document.getElementById("posts");
-            postsContainer.innerHTML = ''; // Clear existing posts
-
-            if (!posts || posts.length === 0) {
-                postsContainer.innerHTML = "<p>No posts found.</p>";
-                return;
-            }
-
-            posts.forEach((post) => {
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-                const postText = post.value?.text || 'No content available.';
-                const createdAt = post.value?.createdAt ? new Date(post.value.createdAt).toLocaleString() : 'Unknown Date';
-
-                // Generate the post URL based on the username and post ID
-                const postId = post.uri.split('/').pop(); // Extract post ID from URI
-                const postUrl = `https://bsky.app/profile/${post.username}/post/${postId}`;
-
-                // Make the entire post box clickable to navigate to the post URL
-               
-
- postElement.innerHTML = `
-                    <h4><a href="${postUrl}" target="_blank">${post.username}</a></h4>
-                    <p>${postText}</p>
-                    <p><strong>Created At:</strong> ${createdAt}</p>
-                `;
-                postElement.onclick = () => window.open(postUrl, '_blank'); // Open post on click
-                postsContainer.appendChild(postElement);
-            });
-        }
-
+        // Placeholder code for post filtering (use original post logic here)
         function filterPosts(user) {
-            let filteredPosts;
-
-            if (user === 'all') {
-                filteredPosts = allPosts; // Show all posts
-                setActiveTab('allPostsTab');
-            } else {
-                const selectedUser = user === 'tim' ? "tim.glos-omu.uk" : "keirannnnnnnn.glos-omu.uk";
-                filteredPosts = allPosts.filter(post => post.username === selectedUser); // Filter for selected user
-                setActiveTab(user === 'tim' ? 'timPostsTab' : 'keiranPostsTab');
-            }
-
-            displayPosts(filteredPosts); // Display the filtered posts
+            console.log(`Filtering posts by ${user}`);
         }
-
-        function setActiveTab(activeTabId) {
-            const tabs = document.querySelectorAll("#tabSystem button");
-            tabs.forEach(tab => {
-                tab.classList.remove("active"); // Remove active class from all tabs
-            });
-            document.getElementById(activeTabId).classList.add("active"); // Add active class to the selected tab
-        }
-
-        // Fetch posts when the page loads
-        fetchPosts();
     </script>
 </body>
 </html>
