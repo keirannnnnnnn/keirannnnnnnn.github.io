@@ -130,7 +130,7 @@
             position: relative;
             width: 50px;
             height: 26px;
-            background: #007AFF;
+            background: #F3F4F6;
             border-radius: 50px;
             transition: background 0.3s;
         }
@@ -148,11 +148,12 @@
         }
 
         .toggle.active {
-            background: #FFCC00;
+            background: #1E1E1E;
         }
 
         .toggle.active::before {
             transform: translateX(24px);
+            background: #FFCC00;
         }
 
         @media (max-width: 768px) {
@@ -238,10 +239,10 @@
         }
 
         function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+            const isDarkMode = document.body.classList.toggle('light-mode');
             document.querySelector('.container').classList.toggle('light-mode');
             document.querySelectorAll('.post').forEach(post => post.classList.toggle('light-mode'));
-            document.getElementById('themeToggle').classList.toggle('active');
+            document.getElementById('themeToggle').classList.toggle('active', !isDarkMode);
         }
 
         window.addEventListener('load', fetchPosts);
