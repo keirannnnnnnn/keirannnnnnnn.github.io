@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #1A1A1A;
-            color: #E0E6ED;
+            background-color: #1E1E1E;
+            color: #E5E8EB;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -19,26 +19,26 @@
             padding: 20px;
             max-width: 480px;
             margin: auto;
-            background: #2C2F33;
+            background: #2A2A2A;
             border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             transition: background 0.3s;
         }
 
         /* Light mode styles */
         body.light-mode {
-            background-color: #F5F7FA;
-            color: #2E3440;
+            background-color: #F1F3F4;
+            color: #2B2B2B;
         }
 
         .container.light-mode {
             background: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         h2, h3 {
             text-align: center;
-            color: #A9B4C2;
+            color: #A0A9B2;
         }
 
         #tabSystem {
@@ -54,14 +54,14 @@
             border: none;
             cursor: pointer;
             font-size: 1em;
-            color: #6C7A89;
+            color: #7A869A;
             position: relative;
             border-radius: 12px;
             transition: color 0.3s, background 0.3s;
         }
 
         #tabSystem button:hover {
-            color: #E0E6ED;
+            color: #007AFF;
             background: rgba(0, 123, 255, 0.1);
         }
 
@@ -80,35 +80,41 @@
             bottom: -5px;
         }
 
-        #tabSystem button:not(.active) {
-            color: #A8B2BF;
-        }
-
         .post {
             margin: 10px 0;
             padding: 10px;
-            background-color: #3A3F45;
+            background-color: #3B3B3B;
             border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s;
         }
 
         /* Light mode for posts */
         .post.light-mode {
-            background-color: #F0F4FA;
-            color: #2E3440;
+            background-color: #FAFAFA;
+            color: #333333;
         }
 
         .post h4 {
             margin: 0 0 5px 0;
             font-size: 1.1em;
-            color: #A9B4C2;
+            color: #A0A9B2;
+        }
+
+        .post h4 a {
+            color: #007AFF;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .post h4 a:hover {
+            color: #0056D2;
         }
 
         .post p {
             margin: 5px 0;
             font-size: 0.9em;
-            color: #C2CCD5;
+            color: #C7CDD3;
         }
 
         .toggle-container {
