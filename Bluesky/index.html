@@ -158,13 +158,87 @@
 </head>
 <body>
     <script>
-        // Toggle between light and dark modes
+        const apiUrl = "https://bsky.social/xrpc";
+        const targetUsers = {
+            "tim.glos-omu.uk": "tim.glos-omu.uk",
+            "keirannnnnnnn.glos-omu.uk": "keirannnnnnnn.glos-omu.uk"
+        };
+        let allPosts = [];
+
+        async function fetchPosts() {
+            const postsData = await Promise.all(Object.keys(targetUsers).map(user => fetchUserPosts(user)));
+            allPosts = postsData.flat();
+            displayPosts(allPosts);
+        }
+
+        async function fetchUserPosts(user) {
+            const response = await fetch(`${apiUrl}/com.atproto.repo.listRecords?repo=${user}&collection=app.bsky.feed.post`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                alert(`Failed to fetch posts for ${user}: ${errorData.message}`);
+                return [];
+            }
+            const posts = await response.json();
+            return (posts.records || []).map(post => ({
+                ...post,
+                username: targetUsers[user]
+            }));
+        }
+
+        function displayPosts(posts) {
+            const postsContainer = document.getElementById("posts");
+            postsContainer.innerHTML = '';
+
+            if (!posts || posts.length === 0) {
+                postsContainer.innerHTML = "<p>No posts found.</p>";
+                return;
+            }
+
+            posts.forEach((post) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                const postText = post.value?.text || 'No content available.';
+                const createdAt = post.value?.createdAt ? new Date(post.value.createdAt).toLocaleString() : 'Unknown Date';
+
+                const postId = post.uri.split('/').pop();
+                const postUrl = `https://bsky.app/profile/${post.username}/post/${postId}`;
+
+                postElement.innerHTML = `
+                    <h4><a href="${postUrl}" target="_blank">${post.username}</a></h4>
+                    <p>${postText}</p>
+                    <p><strong>Created At:</strong> ${createdAt}</p>
+                `;
+                postElement.onclick = () => window.open(postUrl, '_blank');
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        function filterPosts(user) {
+            let filteredPosts;
+            if (user === 'all') {
+                filteredPosts = allPosts;
+                setActiveTab('allPostsTab');
+            } else {
+                const selectedUser = user === 'tim' ? "tim.glos-omu.uk" : "keirannnnnnnn.glos-omu.uk";
+                filteredPosts = allPosts.filter(post => post.username === selectedUser);
+                setActiveTab(user === 'tim' ? 'timPostsTab' : 'keiranPostsTab');
+            }
+            displayPosts(filteredPosts);
+        }
+
+        function setActiveTab(activeTabId) {
+            document.querySelectorAll("#tabSystem button").forEach(tab => tab.classList.remove("active"));
+            document.getElementById(activeTabId).classList.add("active");
+        }
+
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             document.querySelector('.container').classList.toggle('light-mode');
             document.querySelectorAll('.post').forEach(post => post.classList.toggle('light-mode'));
             document.getElementById('themeToggle').classList.toggle('active');
         }
+
+        window.addEventListener('load', fetchPosts);
     </script>
 
     <div class="toggle-container" onclick="toggleTheme()">
@@ -182,12 +256,5 @@
         </div>
         <div id="posts"></div>
     </div>
-
-    <script>
-        // Placeholder code for post filtering (use original post logic here)
-        function filterPosts(user) {
-            console.log(`Filtering posts by ${user}`);
-        }
-    </script>
 </body>
 </html>
