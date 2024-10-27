@@ -10,17 +10,19 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #121212; /* Dark background */
-            color: #E0E0E0; /* Light grey text */
+            background-color: #121212; /* Default dark background */
+            color: #E0E0E0; /* Default light grey text */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
         }
 
         .container {
             padding: 20px;
             max-width: 480px; /* Restricting max width for better mobile view */
             margin: auto; /* Center the container */
-            background: #1E1E1E; /* Slightly lighter dark background */
+            background: #1E1E1E; /* Default slightly lighter dark background */
             border-radius: 16px; /* More rounded corners */
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Softer shadow */
+            transition: background 0.3s; /* Smooth background transition */
         }
 
         h2, h3 {
@@ -77,6 +79,7 @@
             background-color: #2C2C2C; /* Darker background for posts */
             border-radius: 12px; /* Rounded corners for posts */
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); /* Softer shadow */
+            transition: background-color 0.3s; /* Smooth transition for posts */
         }
 
         .post h4 {
@@ -97,6 +100,45 @@
             text-align: center;
         }
 
+        /* Toggle Switch */
+        .toggle-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #007AFF; /* Default toggle color */
+            border-radius: 50px; /* Rounded edges for toggle */
+            transition: background 0.3s; /* Smooth transition for toggle */
+        }
+
+        .toggle::before {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%; /* Round knob */
+            background: white; /* Knob color */
+            top: 2px; /* Position knob */
+            left: 2px; /* Position knob */
+            transition: transform 0.3s; /* Smooth transition for knob */
+        }
+
+        .toggle.active {
+            background: #FFCC00; /* Toggle color for light mode */
+        }
+
+        .toggle.active::before {
+            transform: translateX(24px); /* Move knob to the right */
+        }
+
         @media (max-width: 768px) {
             #tabSystem button {
                 font-size: 0.9em; /* Adjust button font size for smaller screens */
@@ -110,7 +152,25 @@
         if (window.innerWidth <= 768) {
             window.location.href = "https://glos-omu.uk/Bluesky/mobile";
         }
+
+        // Toggle dark/light mode
+        function toggleTheme() {
+            const body = document.body;
+            const container = document.querySelector('.container');
+            const posts = document.querySelectorAll('.post');
+            const toggle = document.getElementById('themeToggle');
+
+            body.classList.toggle('light-mode');
+            container.classList.toggle('light-mode');
+            posts.forEach(post => post.classList.toggle('light-mode'));
+
+            toggle.classList.toggle('active'); // Toggle the active state
+        }
     </script>
+
+    <div class="toggle-container" id="themeToggle" onclick="toggleTheme()">
+        <div class="toggle"></div>
+    </div>
 
     <div class="container">
         <h2>Bluesky Client</h2>
@@ -178,8 +238,10 @@
                 const postUrl = `https://bsky.app/profile/${post.username}/post/${postId}`;
 
                 // Make the entire post box clickable to navigate to the post URL
-                postElement.innerHTML = `
-                    <h4><a href="${postUrl}" target="_blank" style="color: #007AFF;">${post.username}</a></h4>
+               
+
+ postElement.innerHTML = `
+                    <h4><a href="${postUrl}" target="_blank">${post.username}</a></h4>
                     <p>${postText}</p>
                     <p><strong>Created At:</strong> ${createdAt}</p>
                 `;
