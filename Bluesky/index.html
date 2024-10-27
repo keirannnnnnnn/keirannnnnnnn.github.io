@@ -10,21 +10,22 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #000000;
+            background-color: #121212; /* Dark background */
+            color: #E0E0E0; /* Light grey text */
         }
 
         .container {
             padding: 20px;
             max-width: 480px; /* Restricting max width for better mobile view */
             margin: auto; /* Center the container */
-            background: #000000;
+            background: #1E1E1E; /* Slightly lighter dark background */
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Softer shadow */
         }
 
         h2, h3 {
             text-align: center;
-            color: #DEDEDE;
+            color: #FFFFFF; /* White text for headings */
         }
 
         #tabSystem {
@@ -36,23 +37,28 @@
         #tabSystem button {
             flex: 1; /* Make buttons flexible to fill the available space */
             padding: 10px;
-            background: none;
+            background: transparent; /* Transparent background for buttons */
             border: none;
             cursor: pointer;
             font-size: 1em;
-            color: #353535; /* Default color for non-active tabs */
+            color: #A8A8A8; /* Light grey for non-active tabs */
             position: relative;
+            transition: color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        #tabSystem button:hover {
+            color: #FFFFFF; /* Highlight on hover */
         }
 
         #tabSystem button.active {
-            color: #007bff; /* Color for the active tab */
+            color: #007AFF; /* Active tab color similar to macOS */
         }
 
         #tabSystem button.active::after {
             content: '';
             display: block;
             height: 2px;
-            background: #007bff; /* Blue line under active tab */
+            background: #007AFF; /* Blue line under active tab */
             position: absolute;
             left: 0;
             right: 0;
@@ -60,30 +66,32 @@
         }
 
         #tabSystem button:not(.active) {
-            color: grey; /* Grey color for non-active tabs */
+            color: #A8A8A8; /* Light grey color for non-active tabs */
         }
 
         .post {
             margin: 10px 0;
             padding: 10px;
-            background-color: #1E1E1E;
+            background-color: #2C2C2C; /* Darker background for posts */
             border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Softer shadow */
         }
 
         .post h4 {
             margin: 0 0 5px 0;
             font-size: 1.1em; /* Slightly larger font for post title */
+            color: #FFFFFF; /* White text for post titles */
         }
 
         .post p {
             margin: 5px 0;
             font-size: 0.9em; /* Smaller font for post content */
+            color: #B0B0B0; /* Grey for post content */
         }
 
         .login-message {
             margin-bottom: 20px;
-            color: #F4F4F4;
+            color: #FFFFFF; /* White for login messages */
             text-align: center;
         }
 
@@ -169,7 +177,7 @@
 
                 // Make the entire post box clickable to navigate to the post URL
                 postElement.innerHTML = `
-                    <h4><a href="${postUrl}" target="_blank">${post.username}</a></h4>
+                    <h4><a href="${postUrl}" target="_blank" style="color: #007AFF;">${post.username}</a></h4>
                     <p>${postText}</p>
                     <p><strong>Created At:</strong> ${createdAt}</p>
                 `;
