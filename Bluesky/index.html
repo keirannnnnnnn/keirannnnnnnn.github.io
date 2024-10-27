@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluesky Client</title>
+    <title>Bluesky Posts</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <style>
         /* Tab styles */
         #tabSystem {
@@ -53,32 +52,8 @@
     <div class="container">
         <h2>Bluesky Client</h2>
 
-        <!-- Message and description visible until user is logged in -->
-        <div id="loginMessage" class="login-message">
-            <p>Login to Bluesky to View Posts</p>
-        </div>
-
-        <div class="mode-switch">
-            <label for="toggle" class="switch">
-                <input type="checkbox" id="toggle" onchange="toggleMode()">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <button onclick="loginAndFetchPosts()">Login</button>
-
-        <h3 id="userPostsHeader" style="display: none;">User Posts:</h3>
-        <div id="tabSystem" style="display: none;">
+        <h3 id="userPostsHeader">User Posts:</h3>
+        <div id="tabSystem">
             <button id="allPostsTab" class="active" onclick="filterPosts('all')">All Posts</button>
             <button id="timPostsTab" onclick="filterPosts('tim')">tim.glos-omu.uk</button>
             <button id="keiranPostsTab" onclick="filterPosts('keiran')">keirannnnnnnn.glos-omu.uk</button>
@@ -92,48 +67,18 @@
             "tim.glos-omu.uk": "tim.glos-omu.uk",
             "keirannnnnnnn.glos-omu.uk": "keirannnnnnnn.glos-omu.uk"
         };
-        let accessJwt; // To store the access JWT for the logged-in user
-        let loggedInUsername; // To store the logged-in user's username
         let allPosts = []; // Store all fetched posts for filtering
 
-        async function loginAndFetchPosts() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            // Step 1: Create a session with the user's credentials
-            const loginResponse = await fetch(`${apiUrl}/com.atproto.server.createSession`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ identifier: username, password: password })
-            });
-
-            if (!loginResponse.ok) {
-                const errorData = await loginResponse.json();
-                alert("Login failed: " + errorData.message);
-                return;
-            }
-
-            const loginData = await loginResponse.json();
-            accessJwt = loginData.accessJwt; // Store the access JWT for later use
-            loggedInUsername = loginData.did; // Store the logged-in user's DID/username
-
-            // Hide the login message and show the tab system and user posts header after login
-            document.getElementById("loginMessage").style.display = "none";
-            document.getElementById("userPostsHeader").style.display = "block";
-            document.getElementById("tabSystem").style.display = "flex";
-
-            // Step 2: Fetch posts from target users using their DIDs
-            const postsData = await Promise.all(Object.keys(targetUsers).map(user => fetchUserPosts(user, accessJwt)));
+        async function fetchPosts() {
+            // Step 1: Fetch posts from target users
+            const postsData = await Promise.all(Object.keys(targetUsers).map(user => fetchUserPosts(user)));
             allPosts = postsData.flat(); // Flatten the array of posts
             displayPosts(allPosts);
         }
 
-        async function fetchUserPosts(user, accessJwt) {
+        async function fetchUserPosts(user) {
             const response = await fetch(`${apiUrl}/com.atproto.repo.listRecords?repo=${user}&collection=app.bsky.feed.post`, {
                 method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${accessJwt}`
-                }
             });
 
             if (!response.ok) {
@@ -203,13 +148,8 @@
             document.getElementById(activeTabId).classList.add("active"); // Add active class to the selected tab
         }
 
-        function toggleMode() {
-            const body = document.body;
-            const toggle = document.getElementById('toggle');
-
-            body.classList.toggle('dark-mode', toggle.checked);
-            body.classList.toggle('light-mode', !toggle.checked);
-        }
+        // Fetch posts when the page loads
+        fetchPosts();
     </script>
 </body>
 </html>
