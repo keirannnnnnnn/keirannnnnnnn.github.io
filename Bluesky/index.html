@@ -3,10 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bluesky Posts</title>
+    <title>Bluesky Client</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Tab styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 480px; /* Restricting max width for better mobile view */
+            margin: auto; /* Center the container */
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
         #tabSystem {
             display: flex;
             justify-content: space-around;
@@ -14,10 +34,12 @@
         }
 
         #tabSystem button {
+            flex: 1; /* Make buttons flexible to fill the available space */
+            padding: 10px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1em;
             color: grey; /* Default color for non-active tabs */
             position: relative;
         }
@@ -41,14 +63,45 @@
             color: grey; /* Grey color for non-active tabs */
         }
 
+        .post {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em; /* Slightly larger font for post title */
+        }
+
+        .post p {
+            margin: 5px 0;
+            font-size: 0.9em; /* Smaller font for post content */
+        }
+
         .login-message {
             margin-bottom: 20px;
             color: #333;
             text-align: center;
         }
+
+        @media (max-width: 768px) {
+            #tabSystem button {
+                font-size: 0.9em; /* Adjust button font size for smaller screens */
+            }
+        }
     </style>
 </head>
 <body>
+    <script>
+        // Redirect to mobile site if on mobile
+        if (window.innerWidth <= 768) {
+            window.location.href = "https://glos-omu.uk/Bluesky/mobile";
+        }
+    </script>
+
     <div class="container">
         <h2>Bluesky Client</h2>
 
