@@ -27,18 +27,18 @@
 
         /* Dark mode styles */
         body.light-mode {
-            background-color: #1E1E1E;
-            color: #E5E8EB;
+            background-color: #1D1D1F; /* Dark mode background */
+            color: #EDEDED; /* Dark mode text color */
         }
 
         .container.light-mode {
-            background: #2A2A2A;
+            background: #2C2C2E; /* Dark mode container */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         h2, h3 {
             text-align: center;
-            color: #626A73;
+            color: #D1D1D6; /* Dark mode heading color */
         }
 
         #tabSystem {
@@ -54,26 +54,26 @@
             border: none;
             cursor: pointer;
             font-size: 1em;
-            color: #8A939F;
+            color: #A7A8AA; /* Default dark mode tab color */
             position: relative;
             border-radius: 12px;
             transition: color 0.3s, background 0.3s;
         }
 
         #tabSystem button:hover {
-            color: #007AFF;
-            background: rgba(0, 123, 255, 0.1);
+            color: #0A84FF; /* Dark mode hover color */
+            background: rgba(10, 132, 255, 0.1);
         }
 
         #tabSystem button.active {
-            color: #007AFF;
+            color: #0A84FF; /* Active tab color */
         }
 
         #tabSystem button.active::after {
             content: '';
             display: block;
             height: 2px;
-            background: #007AFF;
+            background: #0A84FF; /* Blue line under active tab */
             position: absolute;
             left: 0;
             right: 0;
@@ -83,38 +83,37 @@
         .post {
             margin: 10px 0;
             padding: 10px;
-            background-color: #FAFAFA; /* Default light mode post background */
+            background-color: #3A3A3C; /* Dark mode post background */
             border-radius: 12px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
             transition: background-color 0.3s;
         }
 
-        /* Dark mode for posts */
         .post.light-mode {
             background-color: #3B3B3B;
-            color: #E5E8EB;
+            color: #EDEDED; /* Dark mode post text color */
         }
 
         .post h4 {
             margin: 0 0 5px 0;
             font-size: 1.1em;
-            color: #7B8794;
+            color: #E1E1E3; /* Dark mode post title color */
         }
 
         .post h4 a {
-            color: #007AFF;
+            color: #0A84FF; /* Dark mode link color */
             text-decoration: none;
             transition: color 0.3s;
         }
 
         .post h4 a:hover {
-            color: #0056D2;
+            color: #0056D2; /* Dark mode link hover color */
         }
 
         .post p {
             margin: 5px 0;
             font-size: 0.9em;
-            color: #6C757D;
+            color: #C7C7CC; /* Dark mode post text color */
         }
 
         .toggle-container {
@@ -148,7 +147,7 @@
         }
 
         .toggle.active {
-            background: #1E1E1E; /* Dark mode toggle background */
+            background: #1D1D1F; /* Dark mode toggle background */
         }
 
         .toggle.active::before {
@@ -242,7 +241,7 @@
             const isDarkMode = document.body.classList.toggle('light-mode');
             document.querySelector('.container').classList.toggle('light-mode');
             document.querySelectorAll('.post').forEach(post => post.classList.toggle('light-mode'));
-            document.getElementById('themeToggle').classList.toggle('active', isDarkMode); // Change here
+            document.getElementById('themeToggle').classList.toggle('active', isDarkMode);
         }
 
         window.addEventListener('load', fetchPosts);
