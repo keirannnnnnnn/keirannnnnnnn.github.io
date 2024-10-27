@@ -5,10 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bluesky Client</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Tab styles */
+        #tabSystem {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        #tabSystem button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: grey; /* Default color for non-active tabs */
+            position: relative;
+        }
+
+        #tabSystem button.active {
+            color: #007bff; /* Color for the active tab */
+        }
+
+        #tabSystem button.active::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background: #007bff; /* Blue line under active tab */
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -5px; /* Position below the button */
+        }
+
+        #tabSystem button:not(.active) {
+            color: grey; /* Grey color for non-active tabs */
+        }
+
+        .login-message {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>Bluesky Client</h2>
+
+        <!-- Message and description visible until user is logged in -->
+        <div id="loginMessage" class="login-message">
+            <p>Login to Bluesky to View Posts</p>
+        </div>
 
         <div class="mode-switch">
             <label for="toggle" class="switch">
@@ -29,12 +76,24 @@
 
         <button onclick="loginAndFetchPosts()">Login</button>
 
-        <h3>Your Posts:</h3>
+        <h3 id="userPostsHeader" style="display: none;">User Posts:</h3>
+        <div id="tabSystem" style="display: none;">
+            <button id="allPostsTab" class="active" onclick="filterPosts('all')">All Posts</button>
+            <button id="timPostsTab" onclick="filterPosts('tim')">tim.glos-omu.uk</button>
+            <button id="keiranPostsTab" onclick="filterPosts('keiran')">keirannnnnnnn.glos-omu.uk</button>
+        </div>
         <div id="posts"></div>
     </div>
 
     <script>
         const apiUrl = "https://bsky.social/xrpc";
+        const targetUsers = {
+            "tim.glos-omu.uk": "tim.glos-omu.uk",
+            "keirannnnnnnn.glos-omu.uk": "keirannnnnnnn.glos-omu.uk"
+        };
+        let accessJwt; // To store the access JWT for the logged-in user
+        let loggedInUsername; // To store the logged-in user's username
+        let allPosts = []; // Store all fetched posts for filtering
 
         async function loginAndFetchPosts() {
             const username = document.getElementById("username").value;
@@ -54,56 +113,93 @@
             }
 
             const loginData = await loginResponse.json();
+            accessJwt = loginData.accessJwt; // Store the access JWT for later use
+            loggedInUsername = loginData.did; // Store the logged-in user's DID/username
 
-            // Step 2: Fetch user's posts using the access token
-            const postsResponse = await fetch(`${apiUrl}/com.atproto.repo.listRecords?repo=${loginData.did}&collection=app.bsky.feed.post`, {
+            // Hide the login message and show the tab system and user posts header after login
+            document.getElementById("loginMessage").style.display = "none";
+            document.getElementById("userPostsHeader").style.display = "block";
+            document.getElementById("tabSystem").style.display = "flex";
+
+            // Step 2: Fetch posts from target users using their DIDs
+            const postsData = await Promise.all(Object.keys(targetUsers).map(user => fetchUserPosts(user, accessJwt)));
+            allPosts = postsData.flat(); // Flatten the array of posts
+            displayPosts(allPosts);
+        }
+
+        async function fetchUserPosts(user, accessJwt) {
+            const response = await fetch(`${apiUrl}/com.atproto.repo.listRecords?repo=${user}&collection=app.bsky.feed.post`, {
                 method: "GET",
                 headers: {
-                    "Authorization": `Bearer ${loginData.accessJwt}`
+                    "Authorization": `Bearer ${accessJwt}`
                 }
             });
 
-            if (!postsResponse.ok) {
-                const errorData = await postsResponse.json();
-                alert('Failed to fetch posts: ' + errorData.message);
-                return;
+            if (!response.ok) {
+                const errorData = await response.json();
+                alert(`Failed to fetch posts for ${user}: ${errorData.message}`);
+                return [];
             }
 
-            const postsData = await postsResponse.json();
-            console.log(postsData);  // Log posts data for debugging
-            displayPosts(postsData, username);
+            const posts = await response.json();
+            // Add username directly to each post
+            return (posts.records || []).map(post => ({
+                ...post,
+                username: targetUsers[user] // Add username based on the user who posted
+            }));
         }
 
-        function displayPosts(data, username) {
+        function displayPosts(posts) {
             const postsContainer = document.getElementById("posts");
             postsContainer.innerHTML = ''; // Clear existing posts
 
-            if (!data.records || data.records.length === 0) {
+            if (!posts || posts.length === 0) {
                 postsContainer.innerHTML = "<p>No posts found.</p>";
                 return;
             }
 
-            data.records.forEach(async (post) => {
+            posts.forEach((post) => {
                 const postElement = document.createElement('div');
                 postElement.className = 'post';
-
-                // Using the provided username for the author
-                const authorHandle = username; // Use the authenticated username
                 const postText = post.value?.text || 'No content available.';
                 const createdAt = post.value?.createdAt ? new Date(post.value.createdAt).toLocaleString() : 'Unknown Date';
 
                 // Generate the post URL based on the username and post ID
                 const postId = post.uri.split('/').pop(); // Extract post ID from URI
-                const postUrl = `https://bsky.app/profile/${authorHandle}/post/${postId}`;
+                const postUrl = `https://bsky.app/profile/${post.username}/post/${postId}`;
 
-                // Render post
+                // Make the entire post box clickable to navigate to the post URL
                 postElement.innerHTML = `
-                    <h4><a href="${postUrl}" target="_blank">${authorHandle}</a></h4>
+                    <h4><a href="${postUrl}" target="_blank">${post.username}</a></h4>
                     <p>${postText}</p>
                     <p><strong>Created At:</strong> ${createdAt}</p>
                 `;
+                postElement.onclick = () => window.open(postUrl, '_blank'); // Open post on click
                 postsContainer.appendChild(postElement);
             });
+        }
+
+        function filterPosts(user) {
+            let filteredPosts;
+
+            if (user === 'all') {
+                filteredPosts = allPosts; // Show all posts
+                setActiveTab('allPostsTab');
+            } else {
+                const selectedUser = user === 'tim' ? "tim.glos-omu.uk" : "keirannnnnnnn.glos-omu.uk";
+                filteredPosts = allPosts.filter(post => post.username === selectedUser); // Filter for selected user
+                setActiveTab(user === 'tim' ? 'timPostsTab' : 'keiranPostsTab');
+            }
+
+            displayPosts(filteredPosts); // Display the filtered posts
+        }
+
+        function setActiveTab(activeTabId) {
+            const tabs = document.querySelectorAll("#tabSystem button");
+            tabs.forEach(tab => {
+                tab.classList.remove("active"); // Remove active class from all tabs
+            });
+            document.getElementById(activeTabId).classList.add("active"); // Add active class to the selected tab
         }
 
         function toggleMode() {
