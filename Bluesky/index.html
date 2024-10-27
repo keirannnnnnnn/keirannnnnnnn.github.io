@@ -242,7 +242,7 @@
             const isDarkMode = document.body.classList.toggle('light-mode');
             document.querySelector('.container').classList.toggle('light-mode');
             document.querySelectorAll('.post').forEach(post => post.classList.toggle('light-mode'));
-            document.getElementById('themeToggle').classList.toggle('active', !isDarkMode);
+            document.getElementById('themeToggle').classList.toggle('active', isDarkMode); // Change here
         }
 
         window.addEventListener('load', fetchPosts);
