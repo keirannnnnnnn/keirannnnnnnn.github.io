@@ -185,8 +185,8 @@ input:checked + .slider:before {
 }
 
 .light-mode {
-    background-color: #f9f9f9; /* Light background for light mode */
-    color: #333; /* Dark text color for light mode */
+    background-color: #1E1E1E; /* Light background for light mode */
+    color: #CFCFCF; /* Dark text color for light mode */
 }
 
 .light-mode .post {
