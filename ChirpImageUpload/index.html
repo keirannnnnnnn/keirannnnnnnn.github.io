@@ -7,18 +7,25 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>ChirpImageUpload</h1>
-    <!-- The Select File Button -->
-    <button id="selectFileButton">Select File</button>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-    <button id="uploadButton">Upload</button>
-    <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
-    
-    <!-- Log area -->
-    <div id="logArea" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;">
-        <h3>Log:</h3>
-        <p id="result"></p>
-        <p id="nonShortenedUrl" style="color: grey; display: none;">Non-shortened URL: <span id="nonShortenedUrlValue"></span></p>
+    <div class="container">
+        <h1 id="chirpTitle">ChirpImageUpload</h1>
+        
+        <!-- Buttons Container -->
+        <div class="button-container">
+            <button id="selectFileButton">Select File</button>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <button id="uploadButton">Upload</button>
+        </div>
+
+        <div id="nonShortenedUrl" style="color: grey; display: none;">
+            Non-shortened URL: <span id="nonShortenedUrlValue"></span>
+        </div>
+
+        <div id="logArea">
+            <h3>Log:</h3>
+            <p id="result"></p>
+            <button id="copyUrlButton" style="display: none;">Copy Image Link</button>
+        </div>
     </div>
 
     <script>
