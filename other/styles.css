@@ -1,15 +1,20 @@
 body {
-    background-color: #000;
-    color: #fff;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
     font-family: 'Noto Sans', sans-serif;
     margin: 0;
     padding: 20px;
+    line-height: 1.6;
 }
 
 .container {
     max-width: 800px;
     margin: auto;
     text-align: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #2a2a2a;
+    border-radius: 8px;
 }
 
 .link-list {
@@ -23,9 +28,11 @@ body {
     position: relative;
     display: inline-block;
     padding: 15px;
-    border: 2px solid transparent; /* For hover effect */
-    transition: border-color 0.3s;
-    width: 100%; /* Take full width */
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #333;
 }
 
 .link-item a {
@@ -35,20 +42,22 @@ body {
 }
 
 .link-item:hover {
-    border-color: #fff; /* Change border color on hover */
+    border-color: #3a8bcd;
+    background-color: #444;
 }
 
 .preview-container {
-    display: none; /* Initially hidden */
-    width: 100%; /* Full width of the container */
+    display: none;
+    width: 100%;
 }
 
 .link-item:hover .preview-container {
-    display: block; /* Show preview on hover */
+    display: block;
 }
 
 .preview {
-    width: 100%; /* Full width of the page */
-    height: 300px; /* Set height as needed */
+    width: 100%;
+    height: 300px;
     border: none;
+    border-radius: 8px;
 }
